@@ -1,0 +1,33 @@
+{
+  "name": "CloudVPN+",
+  "description": "A Load-Balanced Secure VPN Platform",
+  "version": "1.0.0",
+  "manifest_version": 3,
+
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "CloudVPN+"
+  },
+
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+
+  "permissions": [
+    "storage",
+    "tabs",
+    "proxy"
+  ],
+
+  "host_permissions": [
+    "<all_urls>"
+  ],
+
+  "web_accessible_resources": [
+    {
+      "resources": ["auth.html"],
+      "matches": ["<all_urls>"]
+    }
+  ]
+}

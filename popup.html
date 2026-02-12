@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>CloudVPN+</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>CloudVPN+</h1>
+
+    <!-- Login Section -->
+    <div id="auth-section" class="section">
+      <button id="login-btn" class="primary-btn">
+        Login
+      </button>
+    </div>
+
+    <!-- VPN Section -->
+    <div id="vpn-section" class="section hidden">
+      <div class="status">
+        Status: <span id="status">Disconnected</span>
+      </div>
+
+      <button id="toggle-btn" class="primary-btn">
+        Connect VPN
+      </button>
+
+      <br /><br />
+
+      <button id="logout-btn" class="primary-btn">
+        Logout
+      </button>
+    </div>
+
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

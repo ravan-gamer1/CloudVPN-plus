@@ -1,0 +1,47 @@
+body {
+  margin: 0;
+  padding: 0;
+  width: 280px;
+  font-family: Arial, sans-serif;
+  background-color: #0f172a;
+  color: white;
+}
+
+.container {
+  padding: 20px;
+  text-align: center;
+}
+
+h1 {
+  font-size: 20px;
+  margin-bottom: 20px;
+}
+
+.section {
+  margin-top: 10px;
+}
+
+.hidden {
+  display: none;
+}
+
+.status {
+  margin-bottom: 15px;
+  font-size: 14px;
+}
+
+.primary-btn {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  border-radius: 6px;
+  background-color: #3b82f6;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.primary-btn:hover {
+  background-color: #2563eb;
+}

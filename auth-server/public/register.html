@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register - CloudVPN+</title>
+  <style>
+    /* --- Shared Theme (Same as Login) --- */
+    :root {
+      --primary-color: #4F46E5;
+      --primary-hover: #4338ca;
+      --bg-color: #F3F4F6;
+      --card-bg: #ffffff;
+      --text-main: #1F2937;
+      --text-muted: #6B7280;
+      --border-color: #D1D5DB;
+      --error-bg: #FEF2F2;
+      --error-text: #DC2626;
+      --success-bg: #ECFDF5;
+      --success-text: #059669;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg-color);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      color: var(--text-main);
+    }
+
+    /* --- Card & Layout --- */
+    .register-container {
+      background-color: var(--card-bg);
+      padding: 2.5rem;
+      border-radius: 12px;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 400px;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .brand-logo {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--primary-color);
+      margin-bottom: 0.5rem;
+      display: block;
+    }
+
+    .header h2 { font-size: 1.5rem; font-weight: 700; }
+    .header p { color: var(--text-muted); font-size: 0.9rem; margin-top: 0.5rem; }
+
+    /* --- Form --- */
+    .form-group { margin-bottom: 1.25rem; }
+    
+    .form-group label {
+      display: block;
+      font-size: 0.875rem;
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      font-size: 1rem;
+      transition: all 0.2s;
+    }
+
+    .form-control:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+    }
+
+    /* --- Button --- */
+    .btn-primary {
+      width: 100%;
+      background-color: var(--primary-color);
+      color: white;
+      padding: 0.75rem;
+      border: none;
+      border-radius: 6px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      transition: background-color 0.2s;
+    }
+
+    .btn-primary:hover { background-color: var(--primary-hover); }
+    .btn-primary:disabled { background-color: var(--text-muted); cursor: not-allowed; }
+
+    /* --- Messages (Error & Success) --- */
+    .message-box {
+      padding: 0.75rem;
+      border-radius: 6px;
+      font-size: 0.875rem;
+      margin-bottom: 1.5rem;
+      display: none;
+      text-align: center;
+      border: 1px solid transparent;
+    }
+
+    .message-error {
+      background-color: var(--error-bg);
+      color: var(--error-text);
+      border-color: #FECACA;
+    }
+
+    .message-success {
+      background-color: var(--success-bg);
+      color: var(--success-text);
+      border-color: #A7F3D0;
+    }
+
+    /* --- Footer --- */
+    .footer {
+      text-align: center;
+      margin-top: 1.5rem;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    .footer a { color: var(--primary-color); text-decoration: none; font-weight: 600; }
+    .footer a:hover { text-decoration: underline; }
+
+    /* --- Spinner --- */
+    .spinner {
+      border: 3px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      border-top: 3px solid #fff;
+      width: 20px;
+      height: 20px;
+      animation: spin 1s linear infinite;
+      display: none;
+      margin-right: 10px;
+    }
+
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+
+  <div class="register-container">
+    <div class="header">
+      <div class="brand-logo">☁️ CloudVPN+</div>
+      <h2>Create Account</h2>
+      <p>Get started with your free account today.</p>
+    </div>
+
+    <div id="messageBox" class="message-box"></div>
+
+    <form id="registerForm">
+      <div class="form-group">
+        <label for="email">Email Address</label>
+        <input type="email" id="email" class="form-control" placeholder="name@company.com" required />
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" class="form-control" placeholder="Create a strong password" required />
+      </div>
+
+      <button type="submit" id="submitBtn" class="btn-primary">
+        <span class="spinner" id="btnSpinner"></span>
+        <span id="btnText">Create Account</span>
+      </button>
+    </form>
+
+    <div class="footer">
+      <p>Already have an account? <a href="login.html">Login here</a></p>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById("registerForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+      
+      const messageBox = document.getElementById("messageBox");
+      const submitBtn = document.getElementById("submitBtn");
+      const btnSpinner = document.getElementById("btnSpinner");
+      const btnText = document.getElementById("btnText");
+
+      // Reset UI
+      messageBox.style.display = "none";
+      messageBox.className = "message-box"; // Reset classes
+      
+      // Set Loading State
+      submitBtn.disabled = true;
+      btnSpinner.style.display = "block";
+      btnText.textContent = "Creating...";
+
+      try {
+        const response = await fetch("http://localhost:5000/register", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          // SUCCESS STATE
+          messageBox.textContent = "Account created successfully! Redirecting...";
+          messageBox.classList.add("message-success");
+          messageBox.style.display = "block";
+          
+          // Wait 1.5 seconds so user sees the success message, then redirect
+          setTimeout(() => {
+            window.location.href = "login.html";
+          }, 1500);
+
+        } else {
+          // API ERROR STATE
+          throw new Error(data.message || "Registration failed");
+        }
+
+      } catch (error) {
+        // NETWORK/API ERROR STATE
+        console.error("Register Error:", error);
+        messageBox.textContent = error.message;
+        messageBox.classList.add("message-error");
+        messageBox.style.display = "block";
+        
+        // Re-enable button only on error (on success we keep it disabled while redirecting)
+        submitBtn.disabled = false;
+        btnSpinner.style.display = "none";
+        btnText.textContent = "Create Account";
+      }
+    });
+  </script>
+
+</body>
+</html>
