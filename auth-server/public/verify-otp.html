@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Verify OTP - CloudVPN+</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: #0f172a; /* Deep dark theme */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .card {
+      background: rgba(30, 41, 59, 0.7);
+      backdrop-filter: blur(10px);
+      padding: 2.5rem;
+      border-radius: 20px;
+      width: 360px;
+      text-align: center;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+      color: white;
+    }
+
+    h2 { margin-bottom: 8px; font-size: 24px; }
+    p { color: #94a3b8; font-size: 14px; margin-bottom: 24px; }
+
+    input {
+      width: 100%;
+      padding: 15px;
+      margin: 10px 0;
+      border-radius: 12px;
+      border: 2px solid #334155;
+      background: #0f172a;
+      color: white;
+      font-size: 24px;
+      text-align: center;
+      letter-spacing: 12px; /* Spaced out numbers look like boxes */
+      box-sizing: border-box;
+      transition: border-color 0.3s;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: #6366f1;
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      background: #6366f1;
+      color: white;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 16px;
+      margin-top: 10px;
+      transition: background 0.3s;
+    }
+
+    button:hover { background: #4f46e5; }
+    button:disabled { background: #334155; cursor: not-allowed; }
+
+    .message { margin-top: 15px; font-size: 14px; display: none; padding: 10px; border-radius: 8px; }
+    .error { display: block; background: rgba(239, 68, 68, 0.2); color: #fca5a5; }
+    .success { display: block; background: rgba(34, 197, 94, 0.2); color: #86efac; }
+  </style>
+</head>
+<body>
+
+<div class="card">
+  <h2>Verify Account</h2>
+  <p>Enter the 6-digit code sent to your email</p>
+
+  <input type="text" id="otp" maxlength="6" placeholder="000000" inputmode="numeric">
+
+  <button id="verifyBtn" onclick="verifyOTP()">Verify Identity</button>
+
+  <div id="message" class="message"></div>
+</div>
+
+<script>
+  const params = new URLSearchParams(window.location.search);
+  const email = params.get("email");
+
+  async function verifyOTP() {
+    const otpInput = document.getElementById("otp");
+    const otp = otpInput.value;
+    const messageDiv = document.getElementById("message");
+    const btn = document.getElementById("verifyBtn");
+
+    if (!otp || otp.length < 6) {
+      messageDiv.textContent = "Please enter 6-digit OTP";
+      messageDiv.className = "message error";
+      return;
+    }
+
+    // Visual feedback
+    btn.disabled = true;
+    btn.textContent = "Verifying...";
+    messageDiv.style.display = "none";
+
+    try {
+      const response = await fetch("http://localhost:5000/verify-otp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, otp })
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        messageDiv.textContent = "Success! Redirecting...";
+        messageDiv.className = "message success";
+        setTimeout(() => { window.location.href = "login.html"; }, 1500);
+      } else {
+        messageDiv.textContent = data.message || "Invalid code";
+        messageDiv.className = "message error";
+        btn.disabled = false;
+        btn.textContent = "Verify Identity";
+      }
+    } catch (err) {
+      messageDiv.textContent = "Server Error. Is the backend running?";
+      messageDiv.className = "message error";
+      btn.disabled = false;
+      btn.textContent = "Verify Identity";
+    }
+  }
+</script>
+
+</body>
+</html>

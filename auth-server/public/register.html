@@ -3,208 +3,307 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Register - CloudVPN+</title>
+  <title>Create Account | CloudVPN+</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  
   <style>
-    /* --- Shared Theme (Same as Login) --- */
     :root {
-      --primary-color: #4F46E5;
-      --primary-hover: #4338ca;
-      --bg-color: #F3F4F6;
-      --card-bg: #ffffff;
-      --text-main: #1F2937;
+      --primary: #4F46E5;
+      --primary-dark: #4338CA;
+      --primary-light: #EEF2FF;
+      --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      --surface: #ffffff;
+      --text-main: #111827;
       --text-muted: #6B7280;
-      --border-color: #D1D5DB;
-      --error-bg: #FEF2F2;
-      --error-text: #DC2626;
-      --success-bg: #ECFDF5;
-      --success-text: #059669;
+      --border: #E5E7EB;
+      --error: #EF4444;
+      --success: #10B981;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
-      font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-      background-color: var(--bg-color);
+      font-family: 'Inter', sans-serif;
+      background: var(--bg-gradient);
+      min-height: 100vh;
       display: flex;
       justify-content: center;
       align-items: center;
-      min-height: 100vh;
-      color: var(--text-main);
+      padding: 1rem;
     }
 
-    /* --- Card & Layout --- */
-    .register-container {
-      background-color: var(--card-bg);
+    /* --- Container --- */
+    .register-card {
+      background: var(--surface);
       padding: 2.5rem;
-      border-radius: 12px;
-      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+      border-radius: 1.5rem;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
       width: 100%;
-      max-width: 400px;
+      max-width: 440px;
+      position: relative;
+      overflow: hidden;
     }
 
-    .header {
-      text-align: center;
-      margin-bottom: 2rem;
+    .register-card::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 4px;
+      background: var(--primary);
     }
 
-    .brand-logo {
-      font-size: 1.5rem;
+    /* --- Header --- */
+    .header { text-align: center; margin-bottom: 2rem; }
+    
+    .brand {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
       font-weight: 800;
-      color: var(--primary-color);
-      margin-bottom: 0.5rem;
-      display: block;
+      font-size: 1.5rem;
+      color: var(--primary);
+      margin-bottom: 1rem;
     }
 
-    .header h2 { font-size: 1.5rem; font-weight: 700; }
-    .header p { color: var(--text-muted); font-size: 0.9rem; margin-top: 0.5rem; }
+    .header h2 { font-size: 1.875rem; color: var(--text-main); letter-spacing: -0.025em; }
+    .header p { color: var(--text-muted); margin-top: 0.5rem; font-size: 0.95rem; }
 
     /* --- Form --- */
-    .form-group { margin-bottom: 1.25rem; }
+    .form-group { margin-bottom: 1.5rem; position: relative; }
     
-    .form-group label {
+    label {
       display: block;
       font-size: 0.875rem;
-      font-weight: 500;
+      font-weight: 600;
+      color: var(--text-main);
       margin-bottom: 0.5rem;
+    }
+
+    .input-wrapper { position: relative; }
+
+    .input-icon {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      width: 18px;
+      height: 18px;
     }
 
     .form-control {
       width: 100%;
-      padding: 0.75rem 1rem;
-      border: 1px solid var(--border-color);
-      border-radius: 6px;
+      padding: 0.75rem 1rem 0.75rem 2.5rem;
+      border: 1.5px solid var(--border);
+      border-radius: 0.75rem;
       font-size: 1rem;
       transition: all 0.2s;
+      background: #F9FAFB;
     }
 
     .form-control:focus {
       outline: none;
-      border-color: var(--primary-color);
-      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+      border-color: var(--primary);
+      background: #fff;
+      box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+    }
+
+    /* --- Password Visibility Toggle --- */
+    .toggle-password {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: 0;
+    }
+
+    /* --- Password Strength Meter --- */
+    .strength-meter {
+      height: 4px;
+      background: #E5E7EB;
+      margin-top: 8px;
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .strength-bar {
+      height: 100%;
+      width: 0%;
+      transition: all 0.3s;
+    }
+
+    .strength-text {
+      font-size: 0.75rem;
+      margin-top: 4px;
+      font-weight: 500;
     }
 
     /* --- Button --- */
-    .btn-primary {
+    .btn-submit {
       width: 100%;
-      background-color: var(--primary-color);
+      background: var(--primary);
       color: white;
-      padding: 0.75rem;
+      padding: 0.875rem;
       border: none;
-      border-radius: 6px;
+      border-radius: 0.75rem;
       font-size: 1rem;
       font-weight: 600;
       cursor: pointer;
       display: flex;
       justify-content: center;
       align-items: center;
-      transition: background-color 0.2s;
+      gap: 0.5rem;
+      transition: transform 0.1s, background-color 0.2s;
     }
 
-    .btn-primary:hover { background-color: var(--primary-hover); }
-    .btn-primary:disabled { background-color: var(--text-muted); cursor: not-allowed; }
+    .btn-submit:hover { background: var(--primary-dark); }
+    .btn-submit:active { transform: scale(0.98); }
+    .btn-submit:disabled { opacity: 0.7; cursor: not-allowed; }
 
-    /* --- Messages (Error & Success) --- */
-    .message-box {
-      padding: 0.75rem;
-      border-radius: 6px;
+    /* --- Notifications --- */
+    #messageBox {
+      padding: 1rem;
+      border-radius: 0.75rem;
       font-size: 0.875rem;
       margin-bottom: 1.5rem;
       display: none;
-      text-align: center;
-      border: 1px solid transparent;
+      font-weight: 500;
     }
 
-    .message-error {
-      background-color: var(--error-bg);
-      color: var(--error-text);
-      border-color: #FECACA;
-    }
-
-    .message-success {
-      background-color: var(--success-bg);
-      color: var(--success-text);
-      border-color: #A7F3D0;
-    }
-
-    /* --- Footer --- */
-    .footer {
-      text-align: center;
-      margin-top: 1.5rem;
-      font-size: 0.9rem;
-      color: var(--text-muted);
-    }
-
-    .footer a { color: var(--primary-color); text-decoration: none; font-weight: 600; }
-    .footer a:hover { text-decoration: underline; }
+    .msg-error { background: #FEF2F2; color: var(--error); border: 1px solid #FCA5A5; }
+    .msg-success { background: #ECFDF5; color: var(--success); border: 1px solid #6EE7B7; }
 
     /* --- Spinner --- */
     .spinner {
-      border: 3px solid rgba(255, 255, 255, 0.3);
+      width: 18px;
+      height: 18px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top-color: #fff;
       border-radius: 50%;
-      border-top: 3px solid #fff;
-      width: 20px;
-      height: 20px;
-      animation: spin 1s linear infinite;
+      animation: spin 0.8s linear infinite;
       display: none;
-      margin-right: 10px;
     }
 
-    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .footer { text-align: center; margin-top: 1.5rem; font-size: 0.9rem; color: var(--text-muted); }
+    .footer a { color: var(--primary); text-decoration: none; font-weight: 600; }
+    .footer a:hover { text-decoration: underline; }
   </style>
 </head>
 <body>
 
-  <div class="register-container">
+  <div class="register-card">
     <div class="header">
-      <div class="brand-logo">☁️ CloudVPN+</div>
+      <div class="brand">
+        <i data-lucide="cloud-lightning"></i> CloudVPN+
+      </div>
       <h2>Create Account</h2>
-      <p>Get started with your free account today.</p>
+      <p>Secure your internet in seconds.</p>
     </div>
 
-    <div id="messageBox" class="message-box"></div>
+    <div id="messageBox"></div>
 
     <form id="registerForm">
       <div class="form-group">
         <label for="email">Email Address</label>
-        <input type="email" id="email" class="form-control" placeholder="name@company.com" required />
+        <div class="input-wrapper">
+          <i data-lucide="mail" class="input-icon"></i>
+          <input type="email" id="email" class="form-control" placeholder="you@example.com" required>
+        </div>
       </div>
 
       <div class="form-group">
         <label for="password">Password</label>
-        <input type="password" id="password" class="form-control" placeholder="Create a strong password" required />
+        <div class="input-wrapper">
+          <i data-lucide="lock" class="input-icon"></i>
+          <input type="password" id="password" class="form-control" placeholder="Min. 8 characters" required>
+          <button type="button" class="toggle-password" id="togglePassword">
+            <i data-lucide="eye" id="eyeIcon"></i>
+          </button>
+        </div>
+        <div class="strength-meter"><div id="strengthBar" class="strength-bar"></div></div>
+        <div id="strengthText" class="strength-text"></div>
       </div>
 
-      <button type="submit" id="submitBtn" class="btn-primary">
+      <button type="submit" id="submitBtn" class="btn-submit">
         <span class="spinner" id="btnSpinner"></span>
-        <span id="btnText">Create Account</span>
+        <span id="btnText">Get Started for Free</span>
       </button>
     </form>
 
     <div class="footer">
-      <p>Already have an account? <a href="login.html">Login here</a></p>
+      <p>Already protected? <a href="login.html">Sign In</a></p>
     </div>
   </div>
 
   <script>
-    document.getElementById("registerForm").addEventListener("submit", async (e) => {
+    // Initialize Lucide Icons
+    lucide.createIcons();
+
+    const registerForm = document.getElementById("registerForm");
+    const passwordInput = document.getElementById("password");
+    const strengthBar = document.getElementById("strengthBar");
+    const strengthText = document.getElementById("strengthText");
+    const togglePassword = document.getElementById("togglePassword");
+    const eyeIcon = document.getElementById("eyeIcon");
+
+    // --- Password Visibility Toggle ---
+    togglePassword.addEventListener("click", () => {
+      const type = passwordInput.type === "password" ? "text" : "password";
+      passwordInput.type = type;
+      eyeIcon.setAttribute("data-lucide", type === "password" ? "eye" : "eye-off");
+      lucide.createIcons();
+    });
+
+    // --- Password Strength Logic ---
+    passwordInput.addEventListener("input", () => {
+      const val = passwordInput.value;
+      let strength = 0;
+      if (val.length >= 8) strength += 25;
+      if (val.match(/[A-Z]/)) strength += 25;
+      if (val.match(/[0-9]/)) strength += 25;
+      if (val.match(/[^A-Za-z0-9]/)) strength += 25;
+
+      strengthBar.style.width = strength + "%";
+      
+      if (strength <= 25) {
+        strengthBar.style.backgroundColor = "#EF4444";
+        strengthText.textContent = "Weak password";
+        strengthText.style.color = "#EF4444";
+      } else if (strength <= 75) {
+        strengthBar.style.backgroundColor = "#F59E0B";
+        strengthText.textContent = "Almost there...";
+        strengthText.style.color = "#F59E0B";
+      } else {
+        strengthBar.style.backgroundColor = "#10B981";
+        strengthText.textContent = "Strong password";
+        strengthText.style.color = "#10B981";
+      }
+    });
+
+    // --- Form Submission ---
+    registerForm.addEventListener("submit", async (e) => {
       e.preventDefault();
 
       const email = document.getElementById("email").value;
-      const password = document.getElementById("password").value;
-      
+      const password = passwordInput.value;
       const messageBox = document.getElementById("messageBox");
       const submitBtn = document.getElementById("submitBtn");
       const btnSpinner = document.getElementById("btnSpinner");
       const btnText = document.getElementById("btnText");
 
-      // Reset UI
+      // Reset State
       messageBox.style.display = "none";
-      messageBox.className = "message-box"; // Reset classes
-      
-      // Set Loading State
+      messageBox.className = ""; 
       submitBtn.disabled = true;
       btnSpinner.style.display = "block";
-      btnText.textContent = "Creating...";
+      btnText.textContent = "Securing account...";
 
       try {
         const response = await fetch("http://localhost:5000/register", {
@@ -216,35 +315,26 @@
         const data = await response.json();
 
         if (response.ok) {
-          // SUCCESS STATE
-          messageBox.textContent = "Account created successfully! Redirecting...";
-          messageBox.classList.add("message-success");
+          messageBox.textContent = "Account verified! Checking email inbox...";
+          messageBox.classList.add("msg-success");
           messageBox.style.display = "block";
           
-          // Wait 1.5 seconds so user sees the success message, then redirect
           setTimeout(() => {
-            window.location.href = "login.html";
+            window.location.href = `verify-otp.html?email=${encodeURIComponent(email)}`;
           }, 1500);
-
         } else {
-          // API ERROR STATE
-          throw new Error(data.message || "Registration failed");
+          throw new Error(data.message || "Something went wrong.");
         }
-
       } catch (error) {
-        // NETWORK/API ERROR STATE
-        console.error("Register Error:", error);
         messageBox.textContent = error.message;
-        messageBox.classList.add("message-error");
+        messageBox.classList.add("msg-error");
         messageBox.style.display = "block";
         
-        // Re-enable button only on error (on success we keep it disabled while redirecting)
         submitBtn.disabled = false;
         btnSpinner.style.display = "none";
-        btnText.textContent = "Create Account";
+        btnText.textContent = "Get Started for Free";
       }
     });
   </script>
-
 </body>
 </html>

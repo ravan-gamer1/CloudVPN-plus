@@ -1,32 +1,34 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Login - CloudVPN+</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login | CloudVPN+</title>
+
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
   <style>
-    /* --- CSS Variables for easy theming --- */
     :root {
-      --primary-color: #4F46E5; /* Indigo */
-      --primary-hover: #4338ca;
-      --bg-color: #F3F4F6;
-      --card-bg: #ffffff;
-      --text-main: #1F2937;
+      --primary: #4F46E5;
+      --primary-hover: #4338CA;
+      --bg: #F9FAFB;
+      --card: #FFFFFF;
+      --text-main: #111827;
       --text-muted: #6B7280;
-      --border-color: #D1D5DB;
-      --error-color: #DC2626;
+      --border: #E5E7EB;
+      --error-bg: #FEF2F2;
+      --error-text: #991B1B;
+      --ring: rgba(79, 70, 229, 0.2);
     }
 
-    /* --- Reset & Base Styles --- */
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
-      font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-      background-color: var(--bg-color);
+      font-family: 'Inter', -apple-system, sans-serif;
+      background-color: var(--bg);
+      background-image: radial-gradient(circle at top right, #e0e7ff 0%, transparent 40%), 
+                        radial-gradient(circle at bottom left, #e0e7ff 0%, transparent 40%);
       display: flex;
       justify-content: center;
       align-items: center;
@@ -34,197 +36,212 @@
       color: var(--text-main);
     }
 
-    /* --- Card Container --- */
-    .login-container {
-      background-color: var(--card-bg);
+    .login-card {
+      background: var(--card);
       padding: 2.5rem;
-      border-radius: 12px;
-      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
       width: 100%;
-      max-width: 400px;
+      max-width: 420px;
+      transition: transform 0.2s ease;
     }
 
-    /* --- Header Section --- */
-    .login-header {
+    .header {
       text-align: center;
       margin-bottom: 2rem;
     }
 
-    .brand-logo {
-      font-size: 1.5rem;
+    .logo {
       font-weight: 800;
-      color: var(--primary-color);
-      margin-bottom: 0.5rem;
-      display: block;
-      text-decoration: none;
-    }
-
-    .login-header h2 {
       font-size: 1.5rem;
-      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 0.5rem;
+      display: inline-block;
     }
 
-    .login-header p {
-      color: var(--text-muted);
-      font-size: 0.9rem;
-      margin-top: 0.5rem;
-    }
+    h2 { font-size: 1.875rem; font-weight: 700; letter-spacing: -0.025em; }
+    p.subtitle { color: var(--text-muted); margin-top: 0.5rem; font-size: 0.95rem; }
 
-    /* --- Form Elements --- */
-    .form-group {
-      margin-bottom: 1.25rem;
-    }
+    .form-group { margin-bottom: 1.25rem; }
 
-    .form-group label {
+    label {
       display: block;
       font-size: 0.875rem;
       font-weight: 500;
       margin-bottom: 0.5rem;
-      color: var(--text-main);
     }
 
-    .form-control {
+    input {
       width: 100%;
       padding: 0.75rem 1rem;
-      border: 1px solid var(--border-color);
-      border-radius: 6px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
       font-size: 1rem;
-      transition: border-color 0.2s, box-shadow 0.2s;
+      transition: all 0.2s ease;
     }
 
-    .form-control:focus {
+    input:focus {
       outline: none;
-      border-color: var(--primary-color);
-      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px var(--ring);
     }
 
-    /* --- Button Styles --- */
-    .btn-primary {
+    button#submitBtn {
       width: 100%;
-      background-color: var(--primary-color);
+      padding: 0.8rem;
+      background: var(--primary);
       color: white;
-      padding: 0.75rem;
       border: none;
-      border-radius: 6px;
-      font-size: 1rem;
+      border-radius: 8px;
       font-weight: 600;
+      font-size: 1rem;
       cursor: pointer;
-      transition: background-color 0.2s;
+      transition: background 0.2s ease;
       display: flex;
       justify-content: center;
       align-items: center;
     }
 
-    .btn-primary:hover {
-      background-color: var(--primary-hover);
+    button#submitBtn:hover { background: var(--primary-hover); }
+    button#submitBtn:disabled { opacity: 0.7; cursor: not-allowed; }
+
+    /* Spinner style */
+    .spinner {
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(255,255,255,0.3);
+      border-radius: 50%;
+      border-top-color: #fff;
+      animation: spin 1s ease-in-out infinite;
+      display: none;
+      margin-right: 8px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      text-align: center;
+      margin: 1.5rem 0;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+    .divider::before, .divider::after {
+      content: '';
+      flex: 1;
+      border-bottom: 1px solid var(--border);
+    }
+    .divider:not(:empty)::before { margin-right: .75em; }
+    .divider:not(:empty)::after { margin-left: .75em; }
+
+    .google-btn-container {
+        display: flex;
+        justify-content: center;
     }
 
-    .btn-primary:disabled {
-      background-color: var(--text-muted);
-      cursor: not-allowed;
+    .alert {
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      font-size: 0.875rem;
+      margin-bottom: 1.5rem;
+      display: none;
+      border: 1px solid transparent;
+    }
+    .alert-error {
+      background-color: var(--error-bg);
+      color: var(--error-text);
+      border-color: #FCA5A5;
     }
 
-    /* --- Footer / Links --- */
-    .login-footer {
+    .footer {
       text-align: center;
       margin-top: 1.5rem;
-      font-size: 0.9rem;
+      font-size: 0.875rem;
       color: var(--text-muted);
     }
-
-    .login-footer a {
-      color: var(--primary-color);
+    .footer a {
+      color: var(--primary);
       text-decoration: none;
       font-weight: 600;
     }
+    .footer a:hover { text-decoration: underline; }
 
-    .login-footer a:hover {
-      text-decoration: underline;
-    }
-
-    /* --- Error Message Box --- */
-    .error-message {
-      background-color: #FEF2F2;
-      color: var(--error-color);
-      border: 1px solid #FECACA;
-      padding: 0.75rem;
-      border-radius: 6px;
-      font-size: 0.875rem;
-      margin-bottom: 1.5rem;
-      display: none; /* Hidden by default */
-      text-align: center;
-    }
-
-    /* --- Spinner Animation --- */
-    .spinner {
-      border: 3px solid rgba(255, 255, 255, 0.3);
-      border-radius: 50%;
-      border-top: 3px solid #fff;
-      width: 20px;
-      height: 20px;
-      animation: spin 1s linear infinite;
-      display: none;
-      margin-right: 10px;
-    }
-
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
   </style>
 </head>
 <body>
 
-  <div class="login-container">
-    <div class="login-header">
-      <div class="brand-logo">☁️ CloudVPN+</div>
+  <div id="g_id_onload"
+       data-client_id="88850224781-haajrv8ku8d2fh7ufc2ian5clu1976md.apps.googleusercontent.com"
+       data-callback="handleCredentialResponse"
+       data-auto_prompt="false">
+  </div>
+
+  <div class="login-card">
+    <div class="header">
+      <div class="logo">CloudVPN+</div>
       <h2>Welcome back</h2>
-      <p>Please enter your details to sign in.</p>
+      <p class="subtitle">Enter your details to access your account</p>
     </div>
 
-    <div id="errorBox" class="error-message"></div>
+    <div id="alertBox" class="alert alert-error"></div>
 
     <form id="loginForm">
       <div class="form-group">
-        <label for="email">Email Address</label>
-        <input type="email" id="email" class="form-control" placeholder="name@company.com" required />
+        <label for="email">Email address</label>
+        <input type="email" id="email" placeholder="name@company.com" required autocomplete="email" />
       </div>
 
       <div class="form-group">
-        <label for="password">Password</label>
-        <input type="password" id="password" class="form-control" placeholder="••••••••" required />
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <label for="password">Password</label>
+            <a href="#" style="font-size: 0.8rem; color: var(--primary); text-decoration: none; margin-bottom: 0.5rem;">Forgot?</a>
+        </div>
+        <input type="password" id="password" placeholder="••••••••" required autocomplete="current-password" />
       </div>
 
-      <button type="submit" id="submitBtn" class="btn-primary">
+      <button type="submit" id="submitBtn">
         <span class="spinner" id="btnSpinner"></span>
-        <span id="btnText">Sign In</span>
+        <span id="btnText">Sign in</span>
       </button>
     </form>
 
-    <div class="login-footer">
-      <p>Don't have an account? <a href="register.html">Create account</a></p>
+    <div class="divider">Or continue with</div>
+
+    <div class="google-btn-container">
+        <div class="g_id_signin" data-type="standard" data-shape="rectangular" data-theme="outline" data-text="signin_with" data-size="large" data-logo_alignment="left"></div>
+    </div>
+
+    <div class="footer">
+      <p>Don't have an account? <a href="register.html">Create an account</a></p>
     </div>
   </div>
 
   <script>
+    const alertBox = document.getElementById("alertBox");
+    const submitBtn = document.getElementById("submitBtn");
+    const btnSpinner = document.getElementById("btnSpinner");
+    const btnText = document.getElementById("btnText");
+
+    function setLoading(isLoading) {
+        if (isLoading) {
+            submitBtn.disabled = true;
+            btnSpinner.style.display = "block";
+            btnText.textContent = "Signing in...";
+        } else {
+            submitBtn.disabled = false;
+            btnSpinner.style.display = "none";
+            btnText.textContent = "Sign in";
+        }
+    }
+
     document.getElementById("loginForm").addEventListener("submit", async (e) => {
       e.preventDefault();
+      setLoading(true);
+      alertBox.style.display = "none";
 
       const email = document.getElementById("email").value;
       const password = document.getElementById("password").value;
-      const errorBox = document.getElementById("errorBox");
-      const submitBtn = document.getElementById("submitBtn");
-      const btnSpinner = document.getElementById("btnSpinner");
-      const btnText = document.getElementById("btnText");
-
-      // Reset UI state
-      errorBox.style.display = "none";
-      errorBox.textContent = "";
-      
-      // Set Loading State
-      submitBtn.disabled = true;
-      btnSpinner.style.display = "block";
-      btnText.textContent = "Authenticating...";
 
       try {
         const response = await fetch("http://localhost:5000/login", {
@@ -233,34 +250,41 @@
           body: JSON.stringify({ email, password })
         });
 
-        // Check if response is JSON, otherwise handle unexpected errors
-        const contentType = response.headers.get("content-type");
-        if (!contentType || !contentType.includes("application/json")) {
-           throw new Error("Server error. Please try again later.");
-        }
-
         const data = await response.json();
 
         if (response.ok && data.redirect) {
           window.location.href = data.redirect;
         } else {
-          // Show error inside the card instead of alert
-          errorBox.style.display = "block";
-          errorBox.textContent = data.message || "Invalid credentials";
+          throw new Error(data.message || "Invalid email or password.");
         }
-
       } catch (error) {
-        console.error("Login Error:", error);
-        errorBox.style.display = "block";
-        errorBox.textContent = "Network error. Is the server running?";
-      } finally {
-        // Reset Loading State
-        submitBtn.disabled = false;
-        btnSpinner.style.display = "none";
-        btnText.textContent = "Sign In";
+        alertBox.textContent = error.message;
+        alertBox.style.display = "block";
+        setLoading(false);
       }
     });
-  </script>
 
+    async function handleCredentialResponse(response) {
+      try {
+        setLoading(true);
+        const res = await fetch("http://localhost:5000/google-login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ idToken: response.credential })
+        });
+
+        const data = await res.json();
+        if (data.redirect) {
+          window.location.href = data.redirect;
+        } else {
+          throw new Error("Google authentication failed.");
+        }
+      } catch (err) {
+        alertBox.textContent = err.message;
+        alertBox.style.display = "block";
+        setLoading(false);
+      }
+    }
+  </script>
 </body>
 </html>
